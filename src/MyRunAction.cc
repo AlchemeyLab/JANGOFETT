@@ -33,7 +33,7 @@ MyRunAction::~MyRunAction() {}
 void MyRunAction::BeginOfRunAction(const G4Run*) {
     auto analysisManager = G4AnalysisManager::Instance();
     G4cout << "Opening ROOT file..." << G4endl;
-    analysisManager->OpenFile("5000test.root");
+    analysisManager->OpenFile("setup.root");
 }
 
 void MyRunAction::EndOfRunAction(const G4Run*) {
@@ -73,11 +73,11 @@ void MyRunAction::EndOfRunAction(const G4Run*) {
 
     */
 
-    // We will store final merged hits for all volumes here
+    // WStore final merged hits for all volumes here
     std::vector<Hit> mergedHits;
 
     std::vector<Hit> tempHits;
-    // Go volume by volume
+    // Det volume by volume
     for (auto& [volID, hits] : detectorHitsMap) {
         // Sort hits in ascending order of time
         std::sort(hits.begin(), hits.end(), [](const Hit& a, const Hit& b) {
@@ -119,14 +119,14 @@ void MyRunAction::EndOfRunAction(const G4Run*) {
         tempHits.clear();
     }
 
-    // ---- NEW: Sort all merged hits across volumes by time from earliest to latest ----
+    // Sort all merged hits across volumes by time from earliest to latest 
     std::sort(mergedHits.begin(), mergedHits.end(),
               [](const Hit& a, const Hit& b) {
                   return a.hitTime < b.hitTime;
               });
-    // -------------------------------------------------------------------------------
+   
 
-    // Now write the merged data to your ROOT ntuple
+    // Write the merged data to ROOT ntuple
     auto analysisManager = G4AnalysisManager::Instance();
     for (const auto& hit : mergedHits) {
         if (hit.volumeID / 10 == 80) {
@@ -138,7 +138,8 @@ void MyRunAction::EndOfRunAction(const G4Run*) {
         analysisManager->AddNtupleRow();
     }
 
-    G4cout << "Number of DSSD Hits: " << DSSDHits << G4endl;
+    //G4cout << "Number of DSSD Hits: " << DSSDHits << G4endl;
+    G4cout << "Run Completed" << G4endl;
 
     analysisManager->Write();
     analysisManager->CloseFile();
@@ -146,4 +147,5 @@ void MyRunAction::EndOfRunAction(const G4Run*) {
     // Remove the temp file if you no longer need it
     std::remove("../src/hits_temp.txt");
 }
+
 
