@@ -1,0 +1,455 @@
+:volu world BOX 1.5*m 1.5*m 1.5*m G4_Galactic
+:vis world OFF
+:rotm r000 0 0 0
+:solid DSSD(S) BOX 5*cm 5*cm 150*um
+:solid target(S) TUBE 0*cm 1*cm 0.936*um
+:solid mysph SPHERE 16.995*cm 17*cm 0 360 0 360
+:solid HPGe_Raw TUBE 0*mm 25*mm 40*mm
+:solid SLICE BOX 100*mm 100*mm 100*mm
+
+:solid stardust_SLICE BOX 30*cm 30*cm 30*cm
+:solid stardust_SLICE_1 BOX 30*cm 30*cm 80*cm
+:solid stardust_center_raw BOX 7.62*cm 18.3965*cm 18.3965*cm 
+:rotm r1 45 0 0
+:rotm r2 -45 0 0
+:rotm r3 90 0 0
+:solid stardust_center_1 SUBTRACTION stardust_center_raw stardust_SLICE r1 0*cm 34.22145344*cm 34.22145344*cm
+:solid stardust_center_2 SUBTRACTION stardust_center_1 stardust_SLICE r1 0*cm -34.22145344*cm -34.22145344*cm
+:solid stardust_center_3 SUBTRACTION stardust_center_2 stardust_SLICE r1 0*cm 34.22145344*cm -34.22145344*cm
+:solid stardust_center_al SUBTRACTION stardust_center_3 stardust_SLICE r1 0*cm -34.22145344*cm 34.22145344*cm
+:solid stardust_center_raw_v BOX 7.82*cm 17.3965*cm 17.3965*cm
+:solid stardust_center_1_v SUBTRACTION stardust_center_raw_v stardust_SLICE r1 0*cm 33.72145344*cm 33.72145344*cm
+:solid stardust_center_2_v SUBTRACTION stardust_center_1_v stardust_SLICE r1 0*cm -33.72145344*cm -33.72145344*cm
+:solid stardust_center_3_v SUBTRACTION stardust_center_2_v stardust_SLICE r1 0*cm 33.72145344*cm -33.72145344*cm
+:solid stardust_center_v SUBTRACTION stardust_center_3_v stardust_SLICE r1 0*cm -33.72145344*cm 33.72145344*cm
+
+:solid stardust_center_con SUBTRACTION stardust_center_al stardust_center_v r000 0*cm 0*cm 0*cm
+:solid stardust_sq_cut BOX 62.65*mm 62.65*mm 100*cm
+:solid stardust_center_con_1 SUBTRACTION stardust_center_con stardust_sq_cut r000 0*cm 0*cm 0*cm
+:solid stardust_center_con_2 SUBTRACTION stardust_center_con_1 stardust_sq_cut r1 0*cm 0*cm 0*cm
+:solid stardust_center_con_3 SUBTRACTION stardust_center_con_2 stardust_sq_cut r2 0*cm 0*cm 0*cm
+:solid stardust_center SUBTRACTION stardust_center_con_3 stardust_sq_cut r3 0*cm 0*cm 0*cm
+
+:solid stardust_lip TUBE 173.965*mm 223.965*mm 12*mm
+:solid stardust_crown_raw BOX 53.88*mm 183.965*mm 183.965*mm
+:solid stardust_crown_1 SUBTRACTION stardust_crown_raw stardust_SLICE r1 0*cm 34.22145344*cm 34.22145344*cm
+:solid stardust_crown_2 SUBTRACTION stardust_crown_1 stardust_SLICE r1 0*cm -34.22145344*cm 34.22145344*cm
+:solid stardust_crown_3 SUBTRACTION stardust_crown_2 stardust_SLICE r1 0*cm -34.22145344*cm -34.22145344*cm
+:solid stardust_crown_4 SUBTRACTION stardust_crown_3 stardust_SLICE r1 0*cm 34.22145344*cm -34.22145344*cm
+:rotm r4 0 0 -45
+:rotm r5 0 45 0
+:solid stardust_crown_5 SUBTRACTION stardust_crown_4 stardust_SLICE r4 -53.88*mm -500.4640687*mm 0*cm
+:solid stardust_crown_6 SUBTRACTION stardust_crown_5 stardust_SLICE r4 -53.88*mm 500.4640687*mm 0*cm
+:solid stardust_crown_7 SUBTRACTION stardust_crown_6 stardust_SLICE r5 -53.88*mm 0*cm -500.4640687*mm 
+:solid stardust_crown_8 SUBTRACTION stardust_crown_7 stardust_SLICE r5 -53.88*mm 0*cm 500.4640687*mm 
+:rotm r6 -45.0 35.26438968275467 0.0
+:rotm r7 45.0 35.26438968275467 0.0
+:rotm r8 135.0 35.26438968275467 0.0
+:rotm r9 -135.0 35.26438968275467 0.0
+:solid stardust_crown_9 SUBTRACTION stardust_crown_8 stardust_SLICE r6 -53.88*mm -336*mm 336*mm
+:solid stardust_crown_10 SUBTRACTION stardust_crown_9 stardust_SLICE r7 -53.88*mm 336*mm 336*mm
+:solid stardust_crown_11 SUBTRACTION stardust_crown_10 stardust_SLICE r8 -53.88*mm 336*mm -336*mm
+:solid stardust_crown_12 SUBTRACTION stardust_crown_11 stardust_SLICE r9 -53.88*mm -336*mm -336*mm
+:rotm r10 0 0 45
+:rotm r11 0 -45 0
+:rotm r12 0 45 0
+:solid stardust_crown_13 SUBTRACTION stardust_crown_12 stardust_crown_12 r000 1*cm 0*cm 0*cm
+:solid crown_cut_sq BOX 40*cm 62.65*mm 62.65*mm
+:solid stardust_crown_14 SUBTRACTION stardust_crown_13 crown_cut_sq r000 0*cm 0*cm 0*cm
+:solid stardust_crown_15 SUBTRACTION stardust_crown_14 crown_cut_sq r4 0*mm -130.0834633*mm 0*cm
+:solid stardust_crown_16 SUBTRACTION stardust_crown_15 crown_cut_sq r10 0*mm 130.0834633*mm 0*cm
+:solid stardust_crown_17 SUBTRACTION stardust_crown_16 crown_cut_sq r11 0*mm 0*cm 130.0834633*mm
+:solid stardust_crown_18 SUBTRACTION stardust_crown_17 crown_cut_sq r12 0*mm 0*cm -130.0834633*mm 
+
+:rotm r13 -60 0 0
+:rotm r14 60 0 0
+:rotm r15 0 90 0
+:rotm r16 0 180 0
+
+:solid crown_cut_tr TUBE 0*mm 40*mm 40*cm
+
+:solid stardust_crown_19 SUBTRACTION stardust_crown_18 crown_cut_tr r6 0*mm -130*mm 130*mm
+:solid stardust_crown_20 SUBTRACTION stardust_crown_19 crown_cut_tr r7 0*mm 130*mm 130*mm
+:solid stardust_crown_21 SUBTRACTION stardust_crown_20 crown_cut_tr r8 0*mm 130*mm -130*mm
+:solid stardust_crown SUBTRACTION stardust_crown_21 crown_cut_tr r9 0*mm -130*mm -130*mm
+
+:solid HPGe_Raw_1 SUBTRACTION HPGe_Raw SLICE r000 120*mm 0*mm 0*mm
+:solid HPGe_Crystal_1(S) SUBTRACTION HPGe_Raw_1 SLICE r000 0*mm 120*mm 0*mm
+:solid HPGe_Raw_2 SUBTRACTION HPGe_Raw SLICE r000 -120*mm 0*mm 0*mm
+:solid HPGe_Crystal_2(S) SUBTRACTION HPGe_Raw_2 SLICE r000 0*mm 120*mm 0*mm
+:solid HPGe_Raw_3 SUBTRACTION HPGe_Raw SLICE r000 -120*mm 0*mm 0*mm
+:solid HPGe_Crystal_3(S) SUBTRACTION HPGe_Raw_3 SLICE r000 0*mm -120*mm 0*mm
+:solid HPGe_Raw_4 SUBTRACTION HPGe_Raw SLICE r000 120*mm 0*mm 0*mm
+:solid HPGe_Crystal_4(S) SUBTRACTION HPGe_Raw_4 SLICE r000 0*mm -120*mm 0*mm
+
+:solid CL_Al_Raw BOX 50.5*mm 50.5*mm 130*mm
+:solid CL_Al_VAC BOX 50.45*mm 50.45*mm 130*mm
+:solid CL_Al_Housing SUBTRACTION CL_Al_Raw CL_Al_VAC r000 0*mm 0*mm 0.05*mm
+
+:solid CL_CF_Cent SPHERE 0*mm 0.00001*mm 0 360 0 360
+:solid CL_CF_RAW TUBE 0*mm 15*mm 80*mm
+:solid CL_CF_1 UNION CL_CF_Cent CL_CF_RAW r000 2.075*cm 2.075*cm 0*cm
+:solid CL_CF_2 UNION CL_CF_1 CL_CF_RAW r000 -2.075*cm 2.075*cm 0*cm
+:solid CL_CF_3 UNION CL_CF_2 CL_CF_RAW r000 -2.075*cm -2.075*cm 0*cm
+:solid CL_CF_4 SUBTRACTION CL_CF_3 CL_CF_Cent r000 0*mm 0*mm 0*mm
+:solid CL_Cold_Finger UNION CL_CF_4 CL_CF_RAW r000 2.075*cm -2.075*cm 0*cm
+
+:solid CL_AL_TUBE TUBE 41*mm 44*mm 200*mm
+:solid CL_CF_BIG TUBE 0*mm 40*mm 280*mm
+:solid Dewar_1 TUBE 0*mm 112.5*mm 135*mm
+:solid Dewar_VAC TUBE 0*mm 107.5*mm 132*mm
+:solid Dewar_2 SUBTRACTION Dewar_1 Dewar_VAC r000 0*mm 0*mm 0*mm
+:solid Dewar_CF_hole TUBE 0*mm 40.5*mm 135*mm
+:solid Dewar_CL SUBTRACTION Dewar_2 Dewar_CF_hole r000 0*mm 0*mm -5*mm
+
+
+:solid PL_HPGE_crystal(S) TUBE 0*cm 2.5*cm 0.835*cm
+:solid PL_HPGE_Dead_Layer TUBE 0*cm 2.5*cm 0.015*cm
+:solid Al_housing TUBE 25.3*mm 30*mm 15*cm
+:solid Be_window TUBE 0*mm 25.3*mm 0.25*mm
+:solid Cold_finger TUBE 0*mm 25*mm 20*cm
+:solid Al_top TUBE 32.5*mm 63.2*mm 38*mm
+:solid VAC_top TUBE 32.55*mm 63.15*mm 37*mm
+:solid Al_bot CONE 32.5*mm 44.5*mm 32.5*mm 63.2*mm 32*mm
+:solid VAC_bot CONE 32.55*mm 44.45*mm 32.55*mm 63.15*mm 31*mm
+:solid Al_con UNION Al_top Al_bot r000 0*mm 0*mm -70*mm
+:solid VAC_con UNION VAC_top VAC_bot r000 0*mm 0*mm -68*mm
+:solid BGO_housing SUBTRACTION Al_con VAC_con r000 0*cm 0*cm 0*cm
+:solid BGO_top TUBE 32.60*mm 63.10*mm 36*mm
+:solid BGO_bot CONE 32.60*mm 44.4*mm 32.60*mm 63.1*mm 30*mm
+:solid BGO_crystal(S) UNION BGO_top BGO_bot r000 0*mm 0*mm -66*mm
+
+:solid PL_Dewar_1 TUBE 0*mm 7.62*cm 11.43*cm
+:solid PL_Dewar_VAC TUBE 0*mm 7.12*cm 10.93*cm
+:solid PL_Dewar_2 SUBTRACTION PL_Dewar_1 PL_Dewar_VAC r000 0*mm 0*mm 0*mm
+:solid Dewar_PL_hole TUBE 0*mm 25.3*mm 11.43*cm
+:solid Dewar_PL SUBTRACTION PL_Dewar_2 Dewar_PL_hole r000 0*mm 0*mm -5*mm
+
+:solid GMX_HPGE_crystal_Raw TUBE 0*cm 24.4*mm 24.485*mm
+:solid GMX_crystal_VAC TUBE 0*cm 0.5*cm 1.5*cm
+:solid GMX_HPGE_crystal(S) SUBTRACTION GMX_HPGE_crystal_Raw GMX_crystal_VAC r000 0*cm 0*cm 14.485*mm
+:solid GMX_HPGE_Dead_Layer TUBE 0*cm 24.4*mm 0.015*cm
+
+:solid CL_BGO_RAW BOX 44.5*mm 12*mm 127.1701136*mm
+:solid CL_SLICE BOX 600*mm 600*mm 600*mm
+:rotm r4444 17.30140949 0 0
+:solid CL_BGO_1 SUBTRACTION CL_BGO_RAW CL_SLICE r4444 0*mm 572.8520902*mm -299.188426*mm
+:rotm r4445 4.5 0 0
+:solid CL_BGO_2 UNION CL_CF_Cent CL_BGO_1 r4445 0*mm 73.6147585*mm 0*mm
+:rotm r4446 0 -4.5 90
+:solid CL_BGO_3 UNION CL_BGO_2 CL_BGO_1 r4446 73.6147585*mm 0*mm 0*mm
+:rotm r4447 0 0 180
+:solid CL_BGO(S) UNION CL_BGO_3 CL_BGO_3 r4447 0*mm 0*mm 0*mm
+:solid CL_BGO_AL_F TRD 59.5 106*mm 59.5*mm 106*mm 65*mm
+:solid CL_BGO_AL_B BOX 106*mm 106*mm 67*mm
+:solid CL_BGO_AL_1 UNION CL_BGO_AL_F CL_BGO_AL_B r000 0*mm 0*mm 132*mm
+:solid CL_BGO_VAC_F TRD 58*mm 104.5*mm 58*mm 104.5*mm 65*mm
+:solid CL_BGO_VAC_B BOX 104.5*mm 104.5*mm 69*mm
+:solid CL_BGO_VAC UNION CL_BGO_VAC_F CL_BGO_VAC_B r000 0*mm 0*mm 132*mm
+:solid CL_BGO_AL_4 SUBTRACTION CL_BGO_AL_1 CL_BGO_VAC r000 0*mm 0*mm 0*mm
+:solid CL_BGO_TUBE_RAW BOX 51.6*mm 51.3*mm 131*mm
+:solid CL_BGO_TUBE_VAC BOX 50.8*mm 50.8*mm 132*mm
+:solid CL_BGO_TUBE SUBTRACTION CL_BGO_TUBE_RAW CL_BGO_TUBE_VAC r000 0*mm 0*mm 0*mm
+:solid CL_BGO_AL UNION CL_BGO_AL_4 CL_BGO_TUBE r000 0*mm 0*mm 67*mm
+:solid HeavyMet_1 TRD 50.4*mm 59.5*mm 50.4*mm 59.5*mm 12.5*mm
+:solid HeavyMet_VAC TRD 29*mm 33.75*mm 29*mm 33.75*mm 12.6*mm
+:solid HeavyMet SUBTRACTION HeavyMet_1 HeavyMet_VAC r000 0*mm 0*mm 0*mm
+
+:volu DSSD(S) DSSD(S) G4_Si
+:volu target(S) target(S) G4_Li
+:volu mysph mysph G4_MYLAR
+:volu HPGe_Crystal_1(S) HPGe_Crystal_1(S) G4_Ge
+:volu HPGe_Crystal_2(S) HPGe_Crystal_2(S) G4_Ge
+:volu HPGe_Crystal_3(S) HPGe_Crystal_3(S) G4_Ge
+:volu HPGe_Crystal_4(S) HPGe_Crystal_4(S) G4_Ge
+:volu CL_Al_Housing CL_Al_Housing G4_Al
+:volu CL_Cold_Finger CL_Cold_Finger G4_Cu
+:volu CL_BGO(S) CL_BGO(S) G4_BGO
+:volu CL_BGO_AL CL_BGO_AL G4_Al
+:volu HeavyMet HeavyMet G4_W
+:volu Dewar_CL Dewar_CL G4_STAINLESS-STEEL
+:volu CL_CF_BIG CL_CF_BIG G4_Cu
+:volu CL_AL_TUBE CL_AL_TUBE G4_Al
+
+:volu stardust_center stardust_center G4_Al
+:volu stardust_crown stardust_crown G4_Al
+:volu stardust_lip stardust_lip G4_Al
+
+:volu PL_HPGE_crystal(S) PL_HPGE_crystal(S) G4_Ge
+:volu PL_HPGE_Dead_Layer PL_HPGE_Dead_Layer G4_Ge
+:volu Al_housing Al_housing G4_Al
+:volu Be_window Be_window G4_Be
+:volu Cold_finger Cold_finger G4_Cu
+:volu BGO_housing BGO_housing G4_Al
+:volu BGO_crystal(S) BGO_crystal(S) G4_BGO
+:volu Dewar_PL Dewar_PL G4_STAINLESS-STEEL
+:volu GMX_HPGE_crystal(S) GMX_HPGE_crystal(S) G4_Ge
+:volu GMX_HPGE_Dead_Layer GMX_HPGE_Dead_Layer G4_Ge
+
+:place mysph -10000 world r000 0*cm 0*cm 0*cm
+
+:rotm r001 0.0 90.0 0.0
+:place GMX_HPGE_crystal(S) 1 world r001 -30.309*cm 0.0*cm 0.0*cm
+:place GMX_HPGE_Dead_Layer -901 world r001 -27.861*cm 0.0*cm 0.0*cm
+:place Dewar_PL -701 world r001 -69.015*cm 0.0*cm 0.0*cm
+:place Al_housing -201 world r001 -42.57*cm 0.0*cm 0.0*cm
+:place Be_window -301 world r001 -27.595*cm 0.0*cm 0.0*cm
+:place Cold_finger -401 world r001 -50.308*cm 0.0*cm 0.0*cm
+:place BGO_housing -501 world r001 -33.87*cm 0.0*cm 0.0*cm
+:place BGO_crystal(S) 601 world r001 -33.97*cm 0.0*cm 0.0*cm
+
+:rotm r002 -45.0 35.26438968275467 0.0
+:place PL_HPGE_crystal(S) 2 world r002 -16.463*cm -16.463*cm 16.463*cm
+:place PL_HPGE_Dead_Layer -902 world r002 -15.981*cm -15.981*cm 15.981*cm
+:place Dewar_PL -702 world r002 -39.846*cm -39.846*cm 39.846*cm
+:place Al_housing -202 world r002 -24.578*cm -24.578*cm 24.578*cm
+:place Be_window -302 world r002 -15.932*cm -15.932*cm 15.932*cm
+:place Cold_finger -402 world r002 -28.492*cm -28.492*cm 28.492*cm
+:place BGO_housing -502 world r002 -19.555*cm -19.555*cm 19.555*cm
+:place BGO_crystal(S) 602 world r002 -19.613*cm -19.613*cm 19.613*cm
+
+:rotm r003 0.0 45.0 0.0
+:place PL_HPGE_crystal(S) 3 world r003 -20.163*cm 0.0*cm 20.163*cm
+:place PL_HPGE_Dead_Layer -903 world r003 -19.573*cm 0.0*cm 19.573*cm
+:place Dewar_PL -703 world r003 -48.801*cm 0.0*cm 48.801*cm
+:place Al_housing -203 world r003 -30.102*cm 0.0*cm 30.102*cm
+:place Be_window -303 world r003 -19.513*cm 0.0*cm 19.513*cm
+:place Cold_finger -403 world r003 -34.896*cm 0.0*cm 34.896*cm
+:place BGO_housing -503 world r003 -23.95*cm 0.0*cm 23.95*cm
+:place BGO_crystal(S) 603 world r003 -24.02*cm 0.0*cm 24.02*cm
+
+:rotm r004 45.0 35.26438968275467 0.0
+:place PL_HPGE_crystal(S) 4 world r004 -16.463*cm 16.463*cm 16.463*cm
+:place PL_HPGE_Dead_Layer -904 world r004 -15.981*cm 15.981*cm 15.981*cm
+:place Dewar_PL -704 world r004 -39.846*cm 39.846*cm 39.846*cm
+:place Al_housing -204 world r004 -24.578*cm 24.578*cm 24.578*cm
+:place Be_window -304 world r004 -15.932*cm 15.932*cm 15.932*cm
+:place Cold_finger -404 world r004 -28.492*cm 28.492*cm 28.492*cm
+:place BGO_housing -504 world r004 -19.555*cm 19.555*cm 19.555*cm
+:place BGO_crystal(S) 604 world r004 -19.613*cm 19.613*cm 19.613*cm
+
+:rotm r005 90.0 45.0 0.0
+:place CL_Al_Housing -205 world r005 -31.82*cm 31.82*cm 0.0*cm
+:place CL_Cold_Finger -405 world r005 -34.047*cm 34.047*cm 0.0*cm
+:place CL_AL_TUBE -1205 world r005 -55.154*cm 55.154*cm 0.0*cm
+:place CL_CF_BIG -1405 world r005 -59.751*cm 59.751*cm 0.0*cm
+:place Dewar_CL -705 world r005 -78.842*cm 78.842*cm 0.0*cm
+:place CL_BGO(S) 1605 world r005 -28.284*cm 28.284*cm 0.0*cm
+:place CL_BGO_AL -1705 world r005 -22.627*cm 22.627*cm 0.0*cm
+:place HeavyMet -1805 world r005 -17.183*cm 17.183*cm 0.0*cm
+:place HPGe_Crystal_1(S) 10051 world r005 -27.029*cm 24.095*cm 2.075*cm
+:place HPGe_Crystal_2(S) 10052 world r005 -24.095*cm 27.029*cm 2.075*cm
+:place HPGe_Crystal_3(S) 10053 world r005 -24.095*cm 27.029*cm -2.075*cm
+:place HPGe_Crystal_4(S) 10054 world r005 -27.029*cm 24.095*cm -2.075*cm
+
+:rotm r006 135.0 35.26438968275467 0.0
+:place PL_HPGE_crystal(S) 6 world r006 -16.463*cm 16.463*cm -16.463*cm
+:place PL_HPGE_Dead_Layer -906 world r006 -15.981*cm 15.981*cm -15.981*cm
+:place Dewar_PL -706 world r006 -39.846*cm 39.846*cm -39.846*cm
+:place Al_housing -206 world r006 -24.578*cm 24.578*cm -24.578*cm
+:place Be_window -306 world r006 -15.932*cm 15.932*cm -15.932*cm
+:place Cold_finger -406 world r006 -28.492*cm 28.492*cm -28.492*cm
+:place BGO_housing -506 world r006 -19.555*cm 19.555*cm -19.555*cm
+:place BGO_crystal(S) 606 world r006 -19.613*cm 19.613*cm -19.613*cm
+
+:rotm r007 0.0 135.0 0.0
+:place GMX_HPGE_crystal(S) 7 world r007 -21.431*cm 0.0*cm -21.431*cm
+:place GMX_HPGE_Dead_Layer -907 world r007 -19.7*cm 0.0*cm -19.7*cm
+:place Dewar_PL -707 world r007 -48.801*cm 0.0*cm -48.801*cm
+:place Al_housing -207 world r007 -30.102*cm 0.0*cm -30.102*cm
+:place Be_window -307 world r007 -19.513*cm 0.0*cm -19.513*cm
+:place Cold_finger -407 world r007 -35.573*cm 0.0*cm -35.573*cm
+:place BGO_housing -507 world r007 -23.95*cm 0.0*cm -23.95*cm
+:place BGO_crystal(S) 607 world r007 -24.02*cm 0.0*cm -24.02*cm
+
+:rotm r008 -135.0 35.26438968275467 0.0
+:place PL_HPGE_crystal(S) 8 world r008 -16.463*cm -16.463*cm -16.463*cm
+:place PL_HPGE_Dead_Layer -908 world r008 -15.981*cm -15.981*cm -15.981*cm
+:place Dewar_PL -708 world r008 -39.846*cm -39.846*cm -39.846*cm
+:place Al_housing -208 world r008 -24.578*cm -24.578*cm -24.578*cm
+:place Be_window -308 world r008 -15.932*cm -15.932*cm -15.932*cm
+:place Cold_finger -408 world r008 -28.492*cm -28.492*cm -28.492*cm
+:place BGO_housing -508 world r008 -19.555*cm -19.555*cm -19.555*cm
+:place BGO_crystal(S) 608 world r008 -19.613*cm -19.613*cm -19.613*cm
+
+:rotm r009 -90.0 45.0 0.0
+:place CL_Al_Housing -209 world r009 -31.82*cm -31.82*cm 0.0*cm
+:place CL_Cold_Finger -409 world r009 -34.047*cm -34.047*cm 0.0*cm
+:place CL_AL_TUBE -1209 world r009 -55.154*cm -55.154*cm 0.0*cm
+:place CL_CF_BIG -1409 world r009 -59.751*cm -59.751*cm 0.0*cm
+:place Dewar_CL -709 world r009 -78.842*cm -78.842*cm 0.0*cm
+:place CL_BGO(S) 1609 world r009 -28.284*cm -28.284*cm 0.0*cm
+:place CL_BGO_AL -1709 world r009 -22.627*cm -22.627*cm 0.0*cm
+:place HeavyMet -1809 world r009 -17.183*cm -17.183*cm 0.0*cm
+:place HPGe_Crystal_1(S) 10091 world r009 -27.029*cm -24.095*cm -2.075*cm
+:place HPGe_Crystal_2(S) 10092 world r009 -24.095*cm -27.029*cm -2.075*cm
+:place HPGe_Crystal_3(S) 10093 world r009 -24.095*cm -27.029*cm 2.075*cm
+:place HPGe_Crystal_4(S) 10094 world r009 -27.029*cm -24.095*cm 2.075*cm
+
+:rotm r010 45.0 0.0 0.0
+:place CL_Al_Housing -210 world r010 0.0*cm 31.82*cm 31.82*cm
+:place CL_Cold_Finger -410 world r010 0.0*cm 34.047*cm 34.047*cm
+:place CL_AL_TUBE -1210 world r010 0.0*cm 55.154*cm 55.154*cm
+:place CL_CF_BIG -1410 world r010 0.0*cm 59.751*cm 59.751*cm
+:place Dewar_CL -710 world r010 0.0*cm 78.842*cm 78.842*cm
+:place CL_BGO(S) 1610 world r010 0.0*cm 28.284*cm 28.284*cm
+:place CL_BGO_AL -1710 world r010 0.0*cm 22.627*cm 22.627*cm
+:place HeavyMet -1810 world r010 0.0*cm 17.183*cm 17.183*cm
+:place HPGe_Crystal_1(S) 10101 world r010 -2.075*cm 24.095*cm 27.029*cm
+:place HPGe_Crystal_2(S) 10102 world r010 2.075*cm 24.095*cm 27.029*cm
+:place HPGe_Crystal_3(S) 10103 world r010 2.075*cm 27.029*cm 24.095*cm
+:place HPGe_Crystal_4(S) 10104 world r010 -2.075*cm 27.029*cm 24.095*cm
+
+:rotm r011 0.0 0.0 0.0
+:place PL_HPGE_crystal(S) 11 world r011 0.0*cm 0.0*cm 28.515*cm
+:place PL_HPGE_Dead_Layer -911 world r011 0.0*cm 0.0*cm 27.68*cm
+:place Dewar_PL -711 world r011 0.0*cm 0.0*cm 69.015*cm
+:place Al_housing -211 world r011 0.0*cm 0.0*cm 42.57*cm
+:place Be_window -311 world r011 0.0*cm 0.0*cm 27.595*cm
+:place Cold_finger -411 world r011 0.0*cm 0.0*cm 49.35*cm
+:place BGO_housing -511 world r011 0.0*cm 0.0*cm 33.87*cm
+:place BGO_crystal(S) 611 world r011 0.0*cm 0.0*cm 33.97*cm
+
+:rotm r012 315.0 0.0 0.0
+:place GMX_HPGE_crystal(S) 12 world r012 0.0*cm -21.431*cm 21.431*cm
+:place GMX_HPGE_Dead_Layer -912 world r012 0.0*cm -19.7*cm 19.7*cm
+:place Dewar_PL -712 world r012 0.0*cm -48.801*cm 48.801*cm
+:place Al_housing -212 world r012 0.0*cm -30.102*cm 30.102*cm
+:place Be_window -312 world r012 0.0*cm -19.513*cm 19.513*cm
+:place Cold_finger -412 world r012 0.0*cm -35.573*cm 35.573*cm
+:place BGO_housing -512 world r012 0.0*cm -23.95*cm 23.95*cm
+:place BGO_crystal(S) 612 world r012 0.0*cm -24.02*cm 24.02*cm
+
+:rotm r013 225.0 0.0 0.0
+:place GMX_HPGE_crystal(S) 13 world r013 0.0*cm -21.431*cm -21.431*cm
+:place GMX_HPGE_Dead_Layer -913 world r013 0.0*cm -19.7*cm -19.7*cm
+:place Dewar_PL -713 world r013 0.0*cm -48.801*cm -48.801*cm
+:place Al_housing -213 world r013 0.0*cm -30.102*cm -30.102*cm
+:place Be_window -313 world r013 0.0*cm -19.513*cm -19.513*cm
+:place Cold_finger -413 world r013 0.0*cm -35.573*cm -35.573*cm
+:place BGO_housing -513 world r013 0.0*cm -23.95*cm -23.95*cm
+:place BGO_crystal(S) 613 world r013 0.0*cm -24.02*cm -24.02*cm
+
+:rotm r014 180.0 0.0 0.0
+:place CL_Al_Housing -214 world r014 0.0*cm 0.0*cm -45.0*cm
+:place CL_Cold_Finger -414 world r014 0.0*cm 0.0*cm -48.15*cm
+:place CL_AL_TUBE -1214 world r014 0.0*cm 0.0*cm -78.0*cm
+:place CL_CF_BIG -1414 world r014 0.0*cm 0.0*cm -84.5*cm
+:place Dewar_CL -714 world r014 0.0*cm 0.0*cm -111.5*cm
+:place CL_BGO(S) 1614 world r014 0.0*cm 0.0*cm -40.0*cm
+:place CL_BGO_AL -1714 world r014 0.0*cm 0.0*cm -32.0*cm
+:place HeavyMet -1814 world r014 0.0*cm 0.0*cm -24.3*cm
+:place HPGe_Crystal_1(S) 10141 world r014 -2.075*cm 2.075*cm -36.15*cm
+:place HPGe_Crystal_2(S) 10142 world r014 2.075*cm 2.075*cm -36.15*cm
+:place HPGe_Crystal_3(S) 10143 world r014 2.075*cm -2.075*cm -36.15*cm
+:place HPGe_Crystal_4(S) 10144 world r014 -2.075*cm -2.075*cm -36.15*cm
+
+:rotm r015 135.0 0.0 0.0
+:place GMX_HPGE_crystal(S) 15 world r015 0.0*cm 21.431*cm -21.431*cm
+:place GMX_HPGE_Dead_Layer -915 world r015 0.0*cm 19.7*cm -19.7*cm
+:place Dewar_PL -715 world r015 0.0*cm 48.801*cm -48.801*cm
+:place Al_housing -215 world r015 0.0*cm 30.102*cm -30.102*cm
+:place Be_window -315 world r015 0.0*cm 19.513*cm -19.513*cm
+:place Cold_finger -415 world r015 0.0*cm 35.573*cm -35.573*cm
+:place BGO_housing -515 world r015 0.0*cm 23.95*cm -23.95*cm
+:place BGO_crystal(S) 615 world r015 0.0*cm 24.02*cm -24.02*cm
+
+:rotm r016 -45.0 -35.26438968275467 0.0
+:place PL_HPGE_crystal(S) 16 world r016 16.463*cm -16.463*cm 16.463*cm
+:place PL_HPGE_Dead_Layer -916 world r016 15.981*cm -15.981*cm 15.981*cm
+:place Dewar_PL -716 world r016 39.846*cm -39.846*cm 39.846*cm
+:place Al_housing -216 world r016 24.578*cm -24.578*cm 24.578*cm
+:place Be_window -316 world r016 15.932*cm -15.932*cm 15.932*cm
+:place Cold_finger -416 world r016 28.492*cm -28.492*cm 28.492*cm
+:place BGO_housing -516 world r016 19.555*cm -19.555*cm 19.555*cm
+:place BGO_crystal(S) 616 world r016 19.613*cm -19.613*cm 19.613*cm
+
+:rotm r017 0.0 315.0 0.0
+:place PL_HPGE_crystal(S) 17 world r017 20.163*cm 0.0*cm 20.163*cm
+:place PL_HPGE_Dead_Layer -917 world r017 19.573*cm 0.0*cm 19.573*cm
+:place Dewar_PL -717 world r017 48.801*cm 0.0*cm 48.801*cm
+:place Al_housing -217 world r017 30.102*cm 0.0*cm 30.102*cm
+:place Be_window -317 world r017 19.513*cm 0.0*cm 19.513*cm
+:place Cold_finger -417 world r017 34.896*cm 0.0*cm 34.896*cm
+:place BGO_housing -517 world r017 23.95*cm 0.0*cm 23.95*cm
+:place BGO_crystal(S) 617 world r017 24.02*cm 0.0*cm 24.02*cm
+
+:rotm r018 45.0 -35.26438968275467 0.0
+:place GMX_HPGE_crystal(S) 18 world r018 17.499*cm 17.499*cm 17.499*cm
+:place GMX_HPGE_Dead_Layer -918 world r018 16.085*cm 16.085*cm 16.085*cm
+:place Dewar_PL -718 world r018 39.846*cm 39.846*cm 39.846*cm
+:place Al_housing -218 world r018 24.578*cm 24.578*cm 24.578*cm
+:place Be_window -318 world r018 15.932*cm 15.932*cm 15.932*cm
+:place Cold_finger -418 world r018 29.046*cm 29.046*cm 29.046*cm
+:place BGO_housing -518 world r018 19.555*cm 19.555*cm 19.555*cm
+:place BGO_crystal(S) 618 world r018 19.613*cm 19.613*cm 19.613*cm
+
+:rotm r019 135.0 -35.26438968275467 0.0
+:place GMX_HPGE_crystal(S) 19 world r019 17.499*cm 17.499*cm -17.499*cm
+:place GMX_HPGE_Dead_Layer -919 world r019 16.085*cm 16.085*cm -16.085*cm
+:place Dewar_PL -719 world r019 39.846*cm 39.846*cm -39.846*cm
+:place Al_housing -219 world r019 24.578*cm 24.578*cm -24.578*cm
+:place Be_window -319 world r019 15.932*cm 15.932*cm -15.932*cm
+:place Cold_finger -419 world r019 29.046*cm 29.046*cm -29.046*cm
+:place BGO_housing -519 world r019 19.555*cm 19.555*cm -19.555*cm
+:place BGO_crystal(S) 619 world r019 19.613*cm 19.613*cm -19.613*cm
+
+:rotm r020 0.0 225.0 0.0
+:place GMX_HPGE_crystal(S) 20 world r020 21.431*cm 0.0*cm -21.431*cm
+:place GMX_HPGE_Dead_Layer -920 world r020 19.7*cm 0.0*cm -19.7*cm
+:place Dewar_PL -720 world r020 48.801*cm 0.0*cm -48.801*cm
+:place Al_housing -220 world r020 30.102*cm 0.0*cm -30.102*cm
+:place Be_window -320 world r020 19.513*cm 0.0*cm -19.513*cm
+:place Cold_finger -420 world r020 35.573*cm 0.0*cm -35.573*cm
+:place BGO_housing -520 world r020 23.95*cm 0.0*cm -23.95*cm
+:place BGO_crystal(S) 620 world r020 24.02*cm 0.0*cm -24.02*cm
+
+:rotm r021 -135.0 -35.26438968275467 0.0
+:place GMX_HPGE_crystal(S) 21 world r021 17.499*cm -17.499*cm -17.499*cm
+:place GMX_HPGE_Dead_Layer -921 world r021 16.085*cm -16.085*cm -16.085*cm
+:place Dewar_PL -721 world r021 39.846*cm -39.846*cm -39.846*cm
+:place Al_housing -221 world r021 24.578*cm -24.578*cm -24.578*cm
+:place Be_window -321 world r021 15.932*cm -15.932*cm -15.932*cm
+:place Cold_finger -421 world r021 29.046*cm -29.046*cm -29.046*cm
+:place BGO_housing -521 world r021 19.555*cm -19.555*cm -19.555*cm
+:place BGO_crystal(S) 621 world r021 19.613*cm -19.613*cm -19.613*cm
+
+:rotm r800 0 0 45
+:place DSSD(S) 801 world r800 0*cm 0*cm -4*cm
+:place DSSD(S) 802 world r800 0*cm 0*cm 4*cm
+
+:place stardust_center -9999 world r000 0*cm 0*cm 0*cm
+:place stardust_crown -9998 world r000 -15.608*cm 0.0*cm 0.0*cm
+:place stardust_lip -9997 world r15 -8.92*cm 0.0*cm 0.0*cm
+:place stardust_crown -9996 world r16 13.108*cm 0.0*cm 0.0*cm
+
+
+:color HPGe_Crystal_1(S) 0.9 0.9 0 0.5 1
+:color HPGe_Crystal_2(S) 0.9 0.9 0 0.5 1
+:color HPGe_Crystal_3(S) 0.9 0.9 0 0.5 1
+:color HPGe_Crystal_4(S) 0.9 0.9 0 0.5 1
+:color DSSD(S) 0.9 0.9 0 0.5
+:color target(S) 1 0 0
+:color mysph 0.4 0.4 0 0.3
+:color CL_Al_Housing 0.9 0.9 0.9 0.3
+:color CL_Cold_Finger 0.722 0.451 0.2 1
+
+:color PL_HPGE_crystal(S) 0.9 0.9 0 0.5 1
+:color PL_HPGE_Dead_Layer 0 0 1 1
+:color Al_housing 0.9 0.9 0.9 0.4
+:color Be_window 0. 0.9 0. 1
+:color Cold_finger 0.722 0.451 0.2 1
+:color DSSD(S) 0.9 0.9 0 0.5
+:color target(S) 1 0 0
+:color mysph 0.4 1 1 0.3
+:color BGO_housing 0.9 0.9 0.9 0.3
+:color BGO_crystal(S) 0.5 0 0.5 1
+:color CL_BGO_AL 0.9 0.9 0.9 0.3
+:color CL_BGO(S) 0.24 0.63 0.33 1
+:color HeavyMet 1 .38 .01 0.8
+:color CL_AL_TUBE 0.9 0.9 0.9 0.3
+:color CL_CF_BIG 0.722 0.451 0.2 1
+:color Dewar_CL 0.6 0.63 0.28 0.3
+:color Dewar_PL 0.6 0.63 0.28 0.3
+:color GMX_HPGE_crystal(S) 0.9 0.9 0 0.5
+:color GMX_HPGE_Dead_Layer 0 0 1 1
