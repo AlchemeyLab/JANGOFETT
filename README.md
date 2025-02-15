@@ -1,9 +1,10 @@
-# JANGOFETT
+TO SET UP JANGOFETT:
+
 mkdir build
 
 cd build
 
-cmake -DGEANT4_CUSTOM_PATH=/path/to/geant4 ..  (ex /path/to/Geant4/geant4-v11.2.1)
+cmake -DGEANT4_CUSTOM_PATH=/path/to/Geant4/geant4-version-install
 
 make
 
@@ -29,3 +30,4 @@ Upon the first run, you will be prompted to include the path to the cgmf.x execu
 
 
 Outputs are accessed in the JANGOFETT build folder
+
