@@ -4,7 +4,7 @@ mkdir build
 
 cd build
 
-cmake -DGEANT4_CUSTOM_PATH=/path/to/Geant4/geant4-version-install
+cmake -DGEANT4_CUSTOM_PATH=/path/to/Geant4/geant4-version-install ..
 
 make
 
