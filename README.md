@@ -76,11 +76,11 @@ Modify or remove this adjustment as needed to match your detector setup.
 
 ACKNOWLEDGEMENTS
 ============================================================================================
-This software runs CGMF (`cgmf.x`) but does not include CGMF’s source code or binaries.  
+This tool runs CGMF (`cgmf.x`) but does not include CGMF’s source code or binaries.  
 CGMF is developed by Los Alamos National Laboratory and is licensed under the BSD 3-Clause License.  
 Users must install CGMF separately and comply with its licensing terms, found at
 https://github.com/lanl/CGMF/blob/main/LICENSE
 
-This software requires a standard Geant4 installation. It does not modify the Geant4 source code but extends its functionality through additional features. Users must install Geant4 separately and comply with its licensing terms.Geant4 is developed by the Geant4 Collaboration and is licensed under the Geant4 Software License Version 1.0  
+This tool requires a standard Geant4 installation. It does not modify the Geant4 source code but extends its functionality through additional features. Users must install Geant4 separately and comply with its licensing terms.Geant4 is developed by the Geant4 Collaboration and is licensed under the Geant4 Software License Version 1.0  
 For more details, visit: [http://cern.ch/geant4/license](http://cern.ch/geant4/license).
 
