@@ -672,3 +672,12 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
+This project is licensed under the GNU General Public License v3.0.
+It interacts with CGMF, which is licensed separately under the BSD 3-Clause License.
+CGMF is developed by Los Alamos National Laboratory, and its license can be found here:
+https://github.com/lanl/CGMF/blob/main/LICENSE
+
+This project requires and interacts with Geant4 but does not modify its source code.  
+Geant4 is licensed under the Geant4 Software License Version 1.0.  
+Users must install Geant4 separately. See http://cern.ch/geant4/license for details.
