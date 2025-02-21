@@ -33,14 +33,14 @@ Upon the first run, you will be prompted to include the path to the cgmf.x execu
 
 Outputs are accessed in the JANGOFETT build directory
 
-============================================================================================
+
 DEFAULT GEOMETRY EXPLANATION
 ============================================================================================
 
 The default detector geometry for JANGOFETT utilizes a fission fragment detection array with DSSDs, HPGEs, and BGOs.  
 
 
-============================================================================================
+
 CHANGING SENSITIVE VOLUMES
 ============================================================================================
 This document describes how to modify sensitive volumes (detectors) in the Geant4 simulation. Sensitive volumes are assigned in DetCon.tg and are processed by the Geant4 program. If VolumeID values are changed, or another .tg file is used with different values, additional updates are required in MyEventAction.cc to ensure correct behavior.
