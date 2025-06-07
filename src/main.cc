@@ -1,6 +1,6 @@
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
-#include "QGSP_BERT.hh"
+#include "G4PhysListFactory.hh" 
 #include "MyPrimaryGeneratorAction.hh"
 #include "MyDetectorConstruction.hh"
 #include "MyRunAction.hh"
@@ -9,40 +9,51 @@
 #include "G4DeexPrecoParameters.hh"
 #include "G4NuclearLevelData.hh"
 #include "G4RadioactiveDecayPhysics.hh"
+#include "G4UAtomicDeexcitation.hh"
+#include "G4LossTableManager.hh"
+#include "G4SystemOfUnits.hh"  
 
 int main(int argc, char** argv) {
-    // Retrieve the de-excitation parameters
-    G4DeexPrecoParameters* deexParameters = G4NuclearLevelData::GetInstance()->GetParameters();
-    deexParameters->SetMaxLifeTime(3e6 * CLHEP::second);  // 10^6 seconds
 
-    // Construct the default run manager (single-threaded)
+    // Retrieve de-excitation parameters and adjust if necessary
+    G4DeexPrecoParameters* deexParameters = G4NuclearLevelData::GetInstance()->GetParameters();
+    deexParameters->SetMaxLifeTime(3e6 * second);  // Example: 3e6 seconds
+
+    // Construct the run manager
     G4RunManager* runManager = new G4RunManager();
 
-    // Mandatory user initialization classes
+    // Set the detector construction
     runManager->SetUserInitialization(new MyDetectorConstruction());
-    G4VModularPhysicsList* physicsList = new QGSP_BERT;
 
-    // Radioactive decay physics
-    physicsList->RegisterPhysics(new G4RadioactiveDecayPhysics);
-    runManager->SetUserInitialization(physicsList);
-    runManager->Initialize();
+    // Create and configure the physics list
+    G4PhysListFactory physFactory;
+  auto physicsList = physFactory.GetReferencePhysList("QGSP_BERT_HPT");
+  if (!physicsList) {
+    G4cerr << "ERROR: QGSP_BERT_HPT not available!\n";
+    return 1;
+  }
+  runManager->SetUserInitialization(physicsList);
 
-    // User action objects
-    MyRunAction* runAction = new MyRunAction();
+    // Configure atomic deexcitation
+    G4UAtomicDeexcitation* atomDeexcitation = new G4UAtomicDeexcitation();
+    atomDeexcitation->SetFluo(true);   // Enable fluorescence (x‑ray emission)
+    //atomDeexcitation->SetAuger(true);   // Enable Auger electrons (optional)
+    G4LossTableManager::Instance()->SetAtomDeexcitation(atomDeexcitation);
+
+    // Register user action classes before initialization
     MyPrimaryGeneratorAction* primaryGen = new MyPrimaryGeneratorAction(argv[1]);
-
-    // User action classes
+    MyRunAction* runAction = new MyRunAction();
     runManager->SetUserAction(primaryGen);
     runManager->SetUserAction(runAction);
     runManager->SetUserAction(new MyEventAction());
-    runManager->SetUserAction(new MySteppingAction(runAction));  // Pass runAction
+    runManager->SetUserAction(new MySteppingAction(runAction));  
 
-    // Initialize G4 kernel
+    // Initialize the run manager once all user initialization is complete
     runManager->Initialize();
 
-    // Instead of firing one particle at a time inside the loop, pass the total number of particles
-    int totalParticles = primaryGen->GetNumberOfParticles();
-    runManager->BeamOn(totalParticles);  // Fire all particles in one run
+    // Fire the beam: get total number of particles from your generator
+    int totalFissionEvents = primaryGen->GetNumberOfFissionEvents();
+    runManager->BeamOn(totalFissionEvents);
 
     // Clean up
     delete runManager;

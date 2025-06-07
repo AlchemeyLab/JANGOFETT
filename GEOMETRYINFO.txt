@@ -1,14 +1,24 @@
 ============================================================================================
-DEFAULT GEOMETRY EXPLANATION? 
+DEFAULT GEOMETRY EXPLANATION
 ============================================================================================
 
-The default detector geometry for JANGOFETT utilizes a fission fragment detection array with DSSDs, HPGEs, and BGOs.  
+The default detector geometry for JANGOFETT utilizes a fission fragment detection array with DSSDs (Dual Sided Silicon Strip Detectors), HPGEs (High Purity Germanium Detectors), and BGOs (Bismuth Germanium Oxides). The particles are emitted from within a vacuum chamber.  
 
+============================================================================================
+FISSIONING SOURCE/TARGET GEOMETRY
+============================================================================================
+JANGOFETT currently has the option to switch to different geometries depending on the fissioning nuclei. There are 3 different text geometries expected: DetCon.tg, 235UDetCon.tg, and 252CfDetCon.tg.
+
+Each file has the same experimental setup, but the "235U" and "252Cf" versions have cylinders of their respective isotope within the default fission chamber. The Uranium target is UF₄, and the Californium source is CfC–H₂O. Both are placed on a 1.5 cm x 1.5 cm carbon backing. The particles from a fission event will be randomly fired within the calculated volume of the source/target. If no cylinder is found, they will be fired at the center of the apparatus (0,0,0).
+
+If running JANGOFETT with 235U or 252Cf, the user will be asked if they want to use the default geometry with no source or the respective file for the isotope. If so, they will also have the option to change the thickness or radius of the cylinder. The Californium source may have a manually input thickness, or one may be calculated given the activity and radius. The geometry file uses "half thicknesses", which is automatically accounted for when JANGOFETT makes edits based off the user prompts.
+
+If a different geometry is desired for the simulaton, this functionality may be easily maintained as long as the cylinder within the new geometry is named "CfCylinder" or "UFCylinder", and the options remain within the 3 given geometry file names.
 
 ============================================================================================
 CHANGING SENSITIVE VOLUMES
 ============================================================================================
-This document describes how to modify sensitive volumes (detectors) in the Geant4 simulation. Sensitive volumes are assigned in DetCon.tg and are processed by the Geant4 program. If VolumeID values are changed, or another .tg file is used with different values, additional updates are required in MyEventAction.cc to ensure correct behavior.
+This document describes how to modify sensitive volumes (detectors) in the Geant4 simulation. Sensitive volumes are assigned in the text geometry files and are processed by the Geant4 program. If VolumeID values are changed,additional updates are required in MyEventAction.cc to ensure correct behavior. These are described below.
 
 --------------------------------------------------------------------------------------------
 1. Function to Determine Resolutions Based On Volume

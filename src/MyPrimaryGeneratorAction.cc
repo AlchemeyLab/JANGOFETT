@@ -1,148 +1,238 @@
 #include "MyPrimaryGeneratorAction.hh"
+#include "MyEventInformation.hh"
+
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
-#include "G4IonTable.hh"  
-#include "G4ParticleDefinition.hh"
+#include "G4IonTable.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4VSolid.hh"
+#include "G4Tubs.hh"
+#include "Randomize.hh"
+#include "G4ThreeVector.hh"
 #include "G4SystemOfUnits.hh"
+
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cctype>
+#include <cmath>
 
-// Strip spaces and quotation marks from strings
-std::string Strip(const std::string& s) {
+
+static std::string Strip(const std::string& s) {
     std::string result = s;
-    result.erase(result.begin(), std::find_if(result.begin(), result.end(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }));
-    result.erase(std::find_if(result.rbegin(), result.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }).base(), result.end());
+    result.erase(result.begin(), std::find_if(result.begin(), result.end(),
+                 [](unsigned char ch){ return !std::isspace(ch); }));
+    result.erase(std::find_if(result.rbegin(), result.rend(),
+                 [](unsigned char ch){ return !std::isspace(ch); }).base(), result.end());
     result.erase(std::remove(result.begin(), result.end(), '"'), result.end());
     return result;
 }
-
-// Split by commas
-std::vector<std::string> SplitByComma(const std::string &s) {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(s);
-    while (std::getline(tokenStream, token, ',')) {
-        tokens.push_back(Strip(token));
-    }
+static std::vector<std::string> SplitByComma(const std::string& s) {
+    std::vector<std::string> tokens; std::string tok; std::istringstream ss(s);
+    while (std::getline(ss,tok,',')) tokens.push_back(Strip(tok));
     return tokens;
 }
 
+// ctor
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction(const std::string& csvFile)
-: fParticleGun(nullptr), currentIndex(0), currentFissionEventID(1), particleCount(0) {
-    // Initialize Particle Gun with 1 particle
+ : fParticleGun(nullptr)
+ , currentIndex(0)
+ , currentFissionEventID(0)
+ , particleCount(0)
+ , fSampleLV(nullptr)
+ , fHasSample(false)
+ , fRadius(0.0)
+ , fHalfZ(0.0)
+ , fLastEventID(-1)
+ , fSampleLookupDone(false)
+{
     fParticleGun = new G4ParticleGun(1);
 
-    // Open and read the CSV file
+    // Read CSV
     std::ifstream file(csvFile);
-    if (!file.is_open()) {
+    if(!file.is_open()){
         G4cerr << "Error: Could not open CSV file: " << csvFile << G4endl;
         return;
     }
     std::string line;
-    // Skip the header row
-    std::getline(file, line);
-
-    // Read and parse the CSV file
+    std::getline(file, line);  // Skip header
     while (std::getline(file, line)) {
-        std::vector<std::string> columns = SplitByComma(line);
-
-        // Ensure the line has enough columns
-        if (columns.size() < 10) {
-            G4cerr << "Error: Incorrect number of columns in CSV file." << G4endl;
+        auto c = SplitByComma(line);
+        if (c.size() < 9) {
+            G4cerr << "CSV format error\n";
             continue;
         }
-
-        // Extract the relevant columns
-        ParticleData particle;
-        particle.A = std::stoi(columns[2]);  // A (mass number)
-        particle.Z = std::stoi(columns[3]);  // Z (atomic number)
-
-        // Set the momentum direction vector
-        particle.momentumDirectionX = std::stod(columns[5]);
-        particle.momentumDirectionY = std::stod(columns[6]);
-        particle.momentumDirectionZ = std::stod(columns[7]);
-
-        // Set kinetic and excitation energies
-        particle.kineticEnergy = std::stod(columns[8]);  
-        particle.excitationEnergy = std::stod(columns[9]);  
-
-        // Store the particle data
-        csvData.push_back(particle);
+        ParticleData p;
+        p.fissionEventID     = std::stoi(c[0]);
+        p.fragmentIdentifier = c[1];
+        p.A                  = std::stoi(c[2]);
+        p.Z                  = std::stoi(c[3]);
+        p.neutrons           = std::stoi(c[4]);
+        p.momentumDirectionX = std::stod(c[5]);
+        p.momentumDirectionY = std::stod(c[6]);
+        p.momentumDirectionZ = std::stod(c[7]);
+        p.kineticEnergy      = std::stod(c[8]);
+        p.excitationEnergy   = std::stod(c[9]);
+        csvData.push_back(p);
     }
-
     file.close();
 }
+
 
 MyPrimaryGeneratorAction::~MyPrimaryGeneratorAction() {
     delete fParticleGun;
 }
 
-// Set the current particle to be fired from CSV data
-void MyPrimaryGeneratorAction::SetCurrentParticle(int index) {
-    if (index < csvData.size()) {
-        currentIndex = index;  // Set the current index to point to the correct particle
+void MyPrimaryGeneratorAction::SetCurrentParticle(int i) {
+    if (i < static_cast<int>(csvData.size())) {
+        currentIndex = i;
     }
 }
 
-// GeneratePrimaries fires the particle gun using the particle at currentIndex
+
 void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
-    // Use the event ID to determine which particle to fire
-    G4int eventID = anEvent->GetEventID();
-
-    // Ensure enough particles in the CSV file
-    if (eventID < csvData.size()) {
-        // Get the particle data corresponding to the current event ID
-        ParticleData particle = csvData[eventID];
-
-        // Get the ion table from G4ParticleTable
-        G4IonTable* ionTable = G4ParticleTable::GetParticleTable()->GetIonTable();
-
-        // Retrieve the ion using Z (atomic number), A (mass number), and excitation energy
-        G4ParticleDefinition* ion = ionTable->GetIon(particle.Z, particle.A, particle.excitationEnergy * MeV);
-
-        if (!ion) {
-            G4cerr << "Error: Ion with A = " << particle.A << ", Z = " << particle.Z 
-                   << " and ExcitationEnergy = " << particle.excitationEnergy << " MeV not found." << G4endl;
-            return;  // Stop if the ion cannot be found
+     // One-time lookup of Cf or U cylinder after geometry has been built:
+    if (!fSampleLookupDone) {
+        fSampleLookupDone = true;
+        const std::vector<G4String> candidateNames = { "CfCylinder", "UFCylinder" };
+        auto* lvs = G4LogicalVolumeStore::GetInstance();
+        for (auto const& name : candidateNames) {
+            if (auto lv = lvs->GetVolume(name, false)) {
+                fSampleLV  = lv;
+                fHasSample = true;
+                if (auto tubs = dynamic_cast<G4Tubs*>(lv->GetSolid())) {
+                    fRadius = tubs->GetOuterRadius() / cm;
+                    fHalfZ  = tubs->GetZHalfLength() / cm;
+                } else {
+                    // not a tube → disable random vertex
+                    fHasSample = false;
+                }
+                break;
+            }
         }
-
-        // Set up the particle gun to fire the ion
-        fParticleGun->SetParticleDefinition(ion);
-        fParticleGun->SetParticleMomentumDirection(G4ThreeVector(particle.momentumDirectionX,
-                                                                 particle.momentumDirectionY,
-                                                                 particle.momentumDirectionZ));
-        fParticleGun->SetParticleEnergy(particle.kineticEnergy * MeV);
-
-        // Fire the particle
-        fParticleGun->GeneratePrimaryVertex(anEvent);
-
-        // Assign FissionEventID
-        int fissionEventID = currentFissionEventID;
-        particleCount++;
-        if (particleCount % 2 == 0) {
-            currentFissionEventID++;
-        }
-
-        // Attach FissionEventID to the event
-        MyEventInformation* eventInfo = new MyEventInformation();
-        eventInfo->SetFissionEventID(fissionEventID);
-        anEvent->SetUserInformation(eventInfo);
-
-        // Log the firing process
-        //G4cout << "Fired particle with A = " << particle.A << ", Z = " << particle.Z
-        //       << ", FissionEventID = " << fissionEventID << G4endl;
     }
+
+
+    if (currentIndex >= static_cast<int>(csvData.size())) return;
+    int thisEventID = csvData[currentIndex].fissionEventID;
+
+     // Choose a random vertex once per fission event:
+    if (fHasSample && thisEventID != fLastEventID) {
+        G4double u   = G4UniformRand();
+        G4double v   = G4UniformRand();
+        G4double r   = fRadius * std::sqrt(u);
+        G4double phi = CLHEP::twopi * v;
+        G4double z   = (2*G4UniformRand() - 1.0) * fHalfZ;
+        fCurrentVertex = G4ThreeVector(
+            r * std::cos(phi) * cm,
+            r * std::sin(phi) * cm,
+            z * cm
+        );
+        fLastEventID = thisEventID;
+    }
+
+    // Fire one primary per CSV row of this event:
+    while (currentIndex < static_cast<int>(csvData.size()) &&
+           csvData[currentIndex].fissionEventID == thisEventID)
+    {
+        const auto& p = csvData[currentIndex];
+
+        // Choose particle type 
+        if (p.fragmentIdentifier == "Gamma" || p.fragmentIdentifier == "gamma") {  // Although CGMF gammas are currently not parsed, the functionality has been implemented to manage them in a fission event
+            // gamma
+            fParticleGun->SetParticleDefinition(
+                G4ParticleTable::GetParticleTable()->FindParticle("gamma"));
+                fParticleGun->SetParticleCharge(0.0);
+            fParticleGun->SetParticleMomentumDirection({
+                p.momentumDirectionX,
+                p.momentumDirectionY,
+                p.momentumDirectionZ
+            });
+            fParticleGun->SetParticleEnergy(p.kineticEnergy * MeV);
+
+        } else if (p.fragmentIdentifier == "Neutron") {
+            // neutron
+            fParticleGun->SetParticleDefinition(
+                G4ParticleTable::GetParticleTable()->FindParticle("neutron"));
+                fParticleGun->SetParticleCharge(0.0);
+            fParticleGun->SetParticleMomentumDirection({
+                p.momentumDirectionX,
+                p.momentumDirectionY,
+                p.momentumDirectionZ
+            });
+            fParticleGun->SetParticleEnergy(p.kineticEnergy * MeV);
+
+                } else {
+            // excited ion
+            auto ion = G4ParticleTable::GetParticleTable()
+                           ->GetIonTable()
+                           ->GetIon(
+                                p.Z,
+                                p.A,
+                                p.excitationEnergy * MeV   // <-- set nuclear excitation
+                           );
+            if (!ion) {
+                G4cerr << "Ion not found A=" << p.A
+                       << " Z=" << p.Z << G4endl;
+                ++currentIndex;
+                continue;
+            }
+
+            // set up ion
+            fParticleGun->SetParticleDefinition(ion);
+
+            // fully-stripped ion: charge = +Z·e
+            fParticleGun->SetParticleCharge(p.Z * eplus);
+
+            // direction and energy
+            fParticleGun->SetParticleMomentumDirection({
+                p.momentumDirectionX,
+                p.momentumDirectionY,
+                p.momentumDirectionZ
+            });
+            fParticleGun->SetParticleEnergy(p.kineticEnergy * MeV);
+        }
+
+
+        //set the vertex
+        if (fHasSample) {
+            fParticleGun->SetParticlePosition(fCurrentVertex);
+        } else {
+            fParticleGun->SetParticlePosition(G4ThreeVector(0,0,0));
+        }
+
+        /*       G4cout
+      << "DEBUG: Firing particle: "
+      << p.fragmentIdentifier
+      << "  (A=" << p.A << ", Z=" << p.Z << ")"
+      << "  KE=" << p.kineticEnergy << " MeV"
+      << "  Exc=" << p.excitationEnergy  << " MeV"
+      << G4endl;
+    
+    */
+
+    // Fire
+    fParticleGun->GeneratePrimaryVertex(anEvent);
+    ++currentIndex;
+    }
+
+    // Attach event ID info:
+    auto* evtInfo = new MyEventInformation();
+    evtInfo->SetFissionEventID(thisEventID);
+    anEvent->SetUserInformation(evtInfo);
+}
+
+int MyPrimaryGeneratorAction::GetNumberOfFissionEvents() const {
+    int maxID = 0;
+    for (const auto& p : csvData) {
+        maxID = std::max(maxID, p.fissionEventID);
+    }
+    return maxID;
 }
 
 int MyPrimaryGeneratorAction::GetNumberOfParticles() const {
-    return csvData.size();
+    return static_cast<int>(csvData.size());
 }
 

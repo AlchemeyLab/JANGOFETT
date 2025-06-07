@@ -1,3 +1,17 @@
+JANGOFETT v1.01 UPDATES
+============================================================================================
+* Added X-ray florescence. 
+* Primary fission products (PFPs) are simulated as ionized. (neutral in v1.0)
+* Added timer to track JANGOFETT run time.
+* Added ability to use either a pre-parsed .csv file or a .cgmf.0 output file.
+* Added ability to shift Geant4 root output so prior simulations with appropriate event IDs and timestamps may be shifted into an experimental timeline.
+* Added option to include evaporated neutrons in Geant4 simulation.    
+* Added option to include 235U or 252Cf in simulation geometry as a cylindrical target/source. Radius and thickness may be modified by the user. 
+  Fissioning source is set on a 1.5 cm x 1.5 cm Carbon backing, 50 nm thick. When a source is present, fission events will originate from random
+  coordinates within the cylindrical volume. 
+    * 235U geometry assumes vapor deposited UF4.
+    * 252Cf geometry assumes electrodeposited CfC–H₂O, where for each Cf atom there are 500 C atoms and 200 H2O molecules. 
+
 
 TO SET UP JANGOFETT
 ============================================================================================
@@ -19,12 +33,25 @@ chmod +x run_jangofett.sh
 --------------------------------------------------------------------------------------------
 TO RUN CGMF AND GEANT4:
 
-     ./run_jangofett.sh - i 
+     ./run_jangofett.sh - ci 
 
-TO RUN WITH AN EXISTING CGMF SIMULATION:
+TO RUN GEANT4 WITH AN EXISTING CGMF SIMULATION:
 
+    ./run_jangofett.sh - cf path/to/cgmffile.cgmf.0
 
-    ./run_jangofett.sh - f path/to/cgmffile.cgmf.0
+TO RUN GEANT4 WITH AN EXISTING PARSED CSV FILE:
+    
+    ./run_jangofett.sh -csv path/to/csvfile.csv
+
+TO APPLY AN EXPERIMENTAL TIMELINE TO AN EXISTING GEANT4 OUTPUT:
+
+    ./run_jangofett.sh -rt path/to/output.root
+    
+    In order to execute properly, the root output will need the timestamps of the recorded step/hit data, 
+    as well as tracks on the event ID in reference to the all primaries/secondaries from a single fission event.
+    
+    The original timestamps will be shifted chronologically according to their eventID. 
+    
 
 --------------------------------------------------------------------------------------------------
 
@@ -32,47 +59,6 @@ Upon the first run, you will be prompted to include the path to the cgmf.x execu
 
 
 Outputs are accessed in the JANGOFETT build directory
-
-
-DEFAULT GEOMETRY EXPLANATION
-============================================================================================
-
-The default detector geometry for JANGOFETT utilizes a fission fragment detection array with DSSDs, HPGEs, and BGOs.  
-
-
-
-CHANGING SENSITIVE VOLUMES
-============================================================================================
-This document describes how to modify sensitive volumes (detectors) in the Geant4 simulation. Sensitive volumes are assigned in DetCon.tg and are processed by the Geant4 program. If VolumeID values are changed, or another .tg file is used with different values, additional updates are required in MyEventAction.cc to ensure correct behavior.
-
---------------------------------------------------------------------------------------------
-1. Function to Determine Resolutions Based On Volume
---------------------------------------------------------------------------------------------
-A Gaussian blur is applied to hit energy and time to simulate detector resolution limitations. This is defined in MyEventAction.cc (starting at line 40).
-
-    Energy resolution: Defined as a fractional value (e.g., 0.002 for 0.2%).
-    Time resolution: Defined in nanoseconds of uncertainty.
-
-Update the VolumeID ranges to match the detector types in your geometry.
-
---------------------------------------------------------------------------------------------
-2. Energy Thresholds
---------------------------------------------------------------------------------------------
-Different detectors may have varying minimum energy thresholds for recording hits. These are defined in the energyThreshold assignment in MyEventAction.cc. 
-
-    Default settings:
-        DSSDs (Volumes 801 and 802) have a 30 MeV threshold.
-        All other detectors have a 20 keV threshold.
-
-Modify if your detector setup requires different thresholds.
-
-
---------------------------------------------------------------------------------------------
-3. VolumeID Adjustment 
---------------------------------------------------------------------------------------------
-In some cases, the VolumeID assigned to a hit may need to be modified. The current implementation adjusts VolumeID values over 10,000 by dividing them by 10 when recording a time-shifted step. This logic is handled in adjustedVolumeID.
-
-Modify or remove this adjustment as needed to match your detector setup.
 
 ACKNOWLEDGEMENTS
 ============================================================================================

@@ -6,6 +6,7 @@
 :solid mysph SPHERE 16.995*cm 17*cm 0 360 0 360
 :solid HPGe_Raw TUBE 0*mm 25*mm 40*mm
 :solid SLICE BOX 100*mm 100*mm 100*mm
+:solid Backing BOX 0.75*cm 0.75*cm 0.0000025*cm
 
 :solid stardust_SLICE BOX 30*cm 30*cm 30*cm
 :solid stardust_SLICE_1 BOX 30*cm 30*cm 80*cm
@@ -155,6 +156,19 @@
 :solid HeavyMet_VAC TRD 29*mm 33.75*mm 29*mm 33.75*mm 12.6*mm
 :solid HeavyMet SUBTRACTION HeavyMet_1 HeavyMet_VAC r000 0*mm 0*mm 0*mm
 
+:ELEM   E_Cf252   Cf   98   252 
+:ELEM   E_C       C    6    12.01
+:ELEM   E_H       H    1    1.008
+:ELEM   E_O       O    8    16.00
+
+:MIXT_BY_NATOMS  CfC_H2O  1*g/cm3  4 
+E_Cf252  1
+E_C      500
+E_H      200
+E_O      200
+
+:volu Backing Backing G4_GRAPHITE
+
 :volu DSSD(S) DSSD(S) G4_Si
 :volu target(S) target(S) G4_Li
 :volu mysph mysph G4_MYLAR
@@ -185,6 +199,9 @@
 :volu Dewar_PL Dewar_PL G4_STAINLESS-STEEL
 :volu GMX_HPGE_crystal(S) GMX_HPGE_crystal(S) G4_Ge
 :volu GMX_HPGE_Dead_Layer GMX_HPGE_Dead_Layer G4_Ge
+
+:solid CfCylinder TUBE 0*cm 0.025*cm  1.628805222e-05*cm
+:volu CfCylinder CfCylinder CfC_H2O
 
 :place mysph -10000 world r000 0*cm 0*cm 0*cm
 
@@ -417,6 +434,9 @@
 :rotm r800 0 0 45
 :place DSSD(S) 801 world r800 0*cm 0*cm -4*cm
 :place DSSD(S) 802 world r800 0*cm 0*cm 4*cm
+
+:place Backing 1 world r800 0*cm 0*cm 0*cm
+:place CfCylinder 1 world r800 0*cm 0*cm 0.050000407*cm
 
 :place stardust_center -9999 world r000 0*cm 0*cm 0*cm
 :place stardust_crown -9998 world r000 -15.608*cm 0.0*cm 0.0*cm

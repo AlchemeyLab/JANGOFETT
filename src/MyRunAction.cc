@@ -33,7 +33,7 @@ MyRunAction::~MyRunAction() {}
 void MyRunAction::BeginOfRunAction(const G4Run*) {
     auto analysisManager = G4AnalysisManager::Instance();
     G4cout << "Opening ROOT file..." << G4endl;
-    analysisManager->OpenFile("setup.root");
+    analysisManager->OpenFile("144qtest_part1.root");
 }
 
 void MyRunAction::EndOfRunAction(const G4Run*) {

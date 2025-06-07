@@ -18,7 +18,7 @@
 // Function to apply Gaussian blur to energy
 double applyGaussianBlurE(double energy, double energyfwhm) {
     static std::default_random_engine generator;
-    double sigma = energy * energyfwhm /(2.35482*100); // Convert FWHM to sigma
+    double sigma = energy * energyfwhm /(2.35482); // Convert FWHM to sigma
     std::normal_distribution<double> distribution(energy, sigma);
     return distribution(generator);
 }
@@ -26,7 +26,8 @@ double applyGaussianBlurE(double energy, double energyfwhm) {
 // Function to apply Gaussian blur to time
 double applyGaussianBlurT(double time, double fwhmns) {
     static std::default_random_engine generator;
-    std::normal_distribution<double> distribution(0, fwhmns);
+    double sigmans = fwhmns/2.35482; //Convert FWHM ns time to sigma ns
+    std::normal_distribution<double> distribution(0, sigmans);
     return distribution(generator) + time;
 }
 
@@ -76,7 +77,7 @@ MyEventAction::MyEventAction() : G4UserEventAction() {
         fissionRate = defaultRate;
     }
 
-    double defaultCount = 5000.0; // or any fallback
+    double defaultCount = 5000.0; 
     const char* envCount = std::getenv("MY_FISSION_COUNT");
     double fissionCount;
     if (envCount) {
@@ -128,7 +129,7 @@ void MyEventAction::EndOfEventAction(const G4Event* event) {
     // 1) Shift times for all steps and discard out-of-window or zero-edep steps
     //    Temporarily store them as Hits, but *only* with the shifted time.
     std::vector<Hit> shiftedHits;
-    shiftedHits.reserve(stepData.size()); // Reserve space for efficiency
+    shiftedHits.reserve(stepData.size()); 
 
     for (const auto& step : stepData) {
         if (step.Edep <= 0) continue;  // Discard zero-dep steps
@@ -187,7 +188,7 @@ void MyEventAction::EndOfEventAction(const G4Event* event) {
             double earliestTime   = hits[i].hitTime;
             size_t j = i + 1;
 
-            while (j < hits.size() && (hits[j].hitTime - earliestTime) <= 20.0) {
+            while (j < hits.size() && (hits[j].hitTime - earliestTime) <= 20.0) { // Modify this value to modify the "hit" time window
                 summedEnergy += hits[j].totalEdep;
                 ++j;
             }
@@ -214,7 +215,7 @@ void MyEventAction::EndOfEventAction(const G4Event* event) {
                 double blurredEnergy = applyGaussianBlurE(summedEnergy, res.energyResolution);
                 finalHit.totalEdep  = blurredEnergy;
 
-                // Then also apply time blurring
+                // Apply time blurring
                 finalHit.hitTime = applyGaussianBlurT(earliestTime, res.timeResolution);
 
 
@@ -224,7 +225,7 @@ void MyEventAction::EndOfEventAction(const G4Event* event) {
                 }
             } 
       
-                // may be missing a } here
+            
             i = j - 1; // skip past merged block
         }
 
@@ -246,4 +247,5 @@ std::vector<StepData> MyEventAction::GetStepDataFromEvent(const G4Event* event) 
 void MyEventAction::AddStepData(const StepData& step) {
     stepDataCollection.push_back(step);
 }
+
 
