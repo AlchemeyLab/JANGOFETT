@@ -19,7 +19,7 @@
 // Function to apply Gaussian blur to energy
 double applyGaussianBlurE(double energy, double energyfwhm) {
     static std::default_random_engine generator;
-    double sigma = energy * energyfwhm /(2.35482*100); // Convert FWHM to sigma
+    double sigma = energy * energyfwhm /(2.35482); // Convert FWHM to sigma
     std::normal_distribution<double> distribution(energy, sigma);
     return distribution(generator);
 }
