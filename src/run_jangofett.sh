@@ -226,18 +226,17 @@ if [[ "$USE_SRC_GEOM" -eq 1 ]]; then
   fi
 
   # 3) apply any overrides
-  if [[ -n "$RADIUS_OVERRIDE" ]]; then
-    sed -i -E \
-      "s|^(:solid[[:space:]]+${CylName}[[:space:]]+TUBE[[:space:]]+0\*cm)[^*]+(\*cm)|\1 ${RADIUS_OVERRIDE}*cm\2|" \
-      "$MASTER_TG"
-  fi
+    if [[ -n "$RADIUS_OVERRIDE" ]]; then
+        sed -i -E \
+          "s|^(:solid[[:space:]]+${CylName}[[:space:]]+TUBE[[:space:]]+0\\*cm[[:space:]]+)[0-9.eE+-]+(\\*cm)|\\1${RADIUS_OVERRIDE}\\2|" \
+          "$MASTER_TG"
+    fi
 
-  if [[ -n "$THICK_OVERRIDE" ]]; then
-    sed -i -E \
-      "s|^(:solid[[:space:]]+${CylName}[[:space:]]+TUBE[[:space:]]+0\*cm[[:space:]]+[^*]+\*cm[[:space:]]+)[^*]+(\*cm)|\1 ${THICK_OVERRIDE}*cm\2|" \
-      "$MASTER_TG"
-  fi
-
+    if [[ -n "$THICK_OVERRIDE" ]]; then
+        sed -i -E \
+          "s|^(:solid[[:space:]]+${CylName}[[:space:]]+TUBE[[:space:]]+0\\*cm[[:space:]]+[0-9.eE+-]+\\*cm[[:space:]]+)[0-9.eE+-]+(\\*cm)|\\1${THICK_OVERRIDE}\\2|" \
+          "$MASTER_TG"
+    fi
 else
   MASTER_TG="$TG_DIR/DetCon.tg"
   [[ -s "$MASTER_TG" ]] || { echo "ERROR: $MASTER_TG missing"; exit 1; }
